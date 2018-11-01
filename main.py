@@ -62,6 +62,7 @@ def print_answers(answers):
         print('Answer: {}'.format(a.answer))
         print()
 
+
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         print('Invalid command line arguments.')
