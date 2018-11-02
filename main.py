@@ -1,5 +1,6 @@
 import sys
 import re
+from parse import split_sentences, get_sentence_parse
 
 
 class Story:
@@ -73,6 +74,9 @@ if __name__ == '__main__':
         directory = lines[0]
         for id in lines[1:]:
             story = parse_story(directory + id + '.story')
+            for sentence in split_sentences(story.text):
+                for word in get_sentence_parse(sentence):
+                    print(word)
             if story is None:  # error occurred when parsing story file
                 continue
             questions = parse_questions(directory + id + '.questions')

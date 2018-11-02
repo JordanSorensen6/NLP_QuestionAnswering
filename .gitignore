@@ -131,3 +131,9 @@ modules.xml
 .idea/misc.xml
 *.ipr
 .idea/vcs.xml
+
+# NLP dependencies
+tokenizers/
+jars/
+nltk-develop/
+englishPCFG.ser.gz
