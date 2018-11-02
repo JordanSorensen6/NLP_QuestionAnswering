@@ -137,3 +137,6 @@ tokenizers/
 jars/
 nltk-develop/
 englishPCFG.ser.gz
+
+# ignore updates
+parse.py
