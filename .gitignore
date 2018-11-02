@@ -136,7 +136,7 @@ modules.xml
 tokenizers/
 jars/
 nltk-develop/
-englishPCFG.ser.gz
+*.ser.gz
 
 # ignore updates
 parse.py
