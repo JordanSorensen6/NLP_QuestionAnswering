@@ -1,5 +1,6 @@
 import sys
 import re
+import question_classifier as qc
 from parse import split_sentences, get_sentence_parse, tag_sentence
 
 
@@ -53,7 +54,8 @@ def parse_questions(filename):
 def answer_questions(story, questions):
     answers = []
     for q in questions:
-        answers.append(Answer(q.id))
+        q_class = qc.classify(q.question)
+        answers.append(Answer(q.id, q_class.answer(story)))
     return answers
 
 
@@ -74,23 +76,10 @@ if __name__ == '__main__':
         directory = lines[0]
         for id in lines[1:]:
             story = parse_story(directory + id + '.story')
-            for sentence in split_sentences(story.text):
-                sentence = sentence.replace('\n', ' ')
-                words = sentence.split(' ')
-                for tag in tag_sentence(words):
-                    print(tag)
-#             tags = tag_sentence(split_sentences(story.text))
-#             for t in tags:
-#                 print(t)
-            
-#             for sentence in split_sentences(story.text):
-#                 sentence = sentence.replace('\n', ' ')
-#                 for word in get_sentence_parse(sentence):
-#                     print(word)
             if story is None:  # error occurred when parsing story file
                 continue
             questions = parse_questions(directory + id + '.questions')
             if not questions:  # error occurred when parsing questions files
                 continue
-            answers = answer_questions(story, questions)
+            answers = answer_questions(story.text, questions)
             print_answers(answers)
