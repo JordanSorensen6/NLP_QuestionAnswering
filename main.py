@@ -1,6 +1,6 @@
 import sys
 import re
-from parse import split_sentences, get_sentence_parse
+from parse import split_sentences, get_sentence_parse, tag_sentence
 
 
 class Story:
@@ -75,8 +75,18 @@ if __name__ == '__main__':
         for id in lines[1:]:
             story = parse_story(directory + id + '.story')
             for sentence in split_sentences(story.text):
-                for word in get_sentence_parse(sentence):
-                    print(word)
+                sentence = sentence.replace('\n', ' ')
+                words = sentence.split(' ')
+                for tag in tag_sentence(words):
+                    print(tag)
+#             tags = tag_sentence(split_sentences(story.text))
+#             for t in tags:
+#                 print(t)
+            
+#             for sentence in split_sentences(story.text):
+#                 sentence = sentence.replace('\n', ' ')
+#                 for word in get_sentence_parse(sentence):
+#                     print(word)
             if story is None:  # error occurred when parsing story file
                 continue
             questions = parse_questions(directory + id + '.questions')

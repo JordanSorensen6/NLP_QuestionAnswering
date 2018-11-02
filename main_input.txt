@@ -1,4 +1,4 @@
-C:/Users/Jordan/PycharmProjects/NLP_QuestionAnswering/developset/
+.//developset/
 1999-W02-5
 1999-W03-5
 1999-W04-5
