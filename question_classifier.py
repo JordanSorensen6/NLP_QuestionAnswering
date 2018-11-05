@@ -3,7 +3,6 @@ import re
 sentence_parses = []
 sentences = []
 tagged_sentences = []
-from nltk.corpus import wordnet
 
 class QuestionClass:
     def __init__(self, type_, question):
@@ -62,8 +61,9 @@ def sentence_score(main_words, sent):  # Check for key words in the sentence for
 def who_answer(question, story):
     sentences = split_sentences(story)
     scores = []
+    main_words = get_root_sub_obj(question)
     for sentence in sentences:
-        scores.append((sentence, word_matches(question, sentence)))
+        scores.append((sentence, word_matches(question, sentence) + sentence_score(main_words, sentence)))
     scores.sort(key=lambda x: x[1], reverse=True)
     for s in scores:  # search highest scored sentences for a person
         tagged = tag_sentence_3(s[0])
@@ -80,11 +80,13 @@ def normalize(sent):  # Convert to lowercase and remove non letter and number ch
 def what_answer(question, story):  # hard
     return ''
 
+
 def where_answer(question, story):
     location_preps = ['above', 'across', 'after', 'along', 'around', 'at', 'behind', 'below',
                       'beside', 'between', 'by', 'close to', 'from', 'in front of', 'inside', 'in', 'into',
                       'near', 'next to', 'onto', 'opposite', 'out of', 'outside', 'over', 'past',
                       'to', 'towards', 'under', 'up']
+    main_words = get_root_sub_obj(question)
     sentences = split_sentences(story)
     scores = []
     for sentence in sentences:
@@ -93,13 +95,14 @@ def where_answer(question, story):
             if word.lower() in location_preps:
                 bonus = 3
                 break
-        scores.append((sentence, word_matches(question, sentence) + bonus))
+        scores.append((sentence, word_matches(question, sentence) + bonus + sentence_score(main_words, sentence)))
     scores.sort(key=lambda x: x[1], reverse=True)
     for s in scores:  # search highest scored sentences for a location
         tagged = tag_sentence_3(s[0])
+        answer = ''
         for pair in tagged:
             if pair[1] == 'LOCATION':
-                return s[0]
+                answer += s[0] + ' '
     return scores[0][0]
 
 
