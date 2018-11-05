@@ -104,7 +104,7 @@ def where_answer(question, story):
 
 
 def when_answer(question, story):
-    main_words = get_root_sub_obj(question.question)
+    main_words = get_root_sub_obj(question)
     identify_parse_tag_story(story)
     sentence_scores = []
     possible_sentence_answer = []
@@ -112,7 +112,7 @@ def when_answer(question, story):
     answer = ""
 
     for sentence in sentences:
-        wm = word_matches(question.question, sentence)
+        wm = word_matches(question, sentence)
         sc = sentence_score(main_words, sentence)
         sentence_scores.append(wm + sc)
 
@@ -144,12 +144,12 @@ def when_answer(question, story):
 
 def why_answer(question, story):  # easy mitch
     common_answer_words = [("why", "because"), ("why", "so")]
-    main_words = get_root_sub_obj(question.question)
+    main_words = get_root_sub_obj(question)
     main_words = main_words + common_answer_words
     sentence_scores = []
     sents = split_sentences(story)
     for sent in sents:
-        wm = word_matches(question.question, sent)
+        wm = word_matches(question, sent)
         sc = sentence_score(main_words, sent)
         sentence_scores.append(wm + sc)
 
