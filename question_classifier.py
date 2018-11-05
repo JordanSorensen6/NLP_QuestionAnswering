@@ -34,7 +34,7 @@ def classify(question):
     else:
         for t in types:
             if t in q_split:
-                return QuestionClass(type, question)
+                return QuestionClass(t, question)
 
 
 def word_matches(sent1, sent2):  # Check sentence similarity.
