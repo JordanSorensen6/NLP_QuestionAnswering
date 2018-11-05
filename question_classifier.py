@@ -69,8 +69,8 @@ def who_answer(question, story):
         tagged = tag_sentence_3(s[0])
         for pair in tagged:
             if pair[1] == 'PERSON' and pair[0] not in question:
-                return pair[0]
-    return scores[0]
+                return s[0]
+    return scores[0][0]
 
 
 def normalize(sent):  # Convert to lowercase and remove non letter and number chars.
@@ -99,8 +99,8 @@ def where_answer(question, story):
         tagged = tag_sentence_3(s[0])
         for pair in tagged:
             if pair[1] == 'LOCATION':
-                return pair[0]
-    return scores[0]
+                return s[0]
+    return scores[0][0]
 
 
 def when_answer(question, story):
