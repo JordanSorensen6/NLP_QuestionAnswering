@@ -52,6 +52,7 @@ def parse_questions(filename):
 
 def answer_questions(story, questions):
     answers = []
+
     for q in questions:
         q_class = qc.classify(q.question)
 

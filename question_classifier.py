@@ -1,9 +1,10 @@
 from parse import split_sentences, tag_sentence_3, tag_sentence_7, sentence_parse, get_root_sub_obj
 import re
+from nltk.corpus import wordnet
+
 sentence_parses = []
 sentences = []
 tagged_sentences = []
-from nltk.corpus import wordnet
 
 class QuestionClass:
     def __init__(self, type_, question):
