@@ -1,4 +1,4 @@
-from parse import split_sentences, tag_sentence, sentence_parse, get_root_sub_obj
+from parse import split_sentences, tag_sentence_3, tag_sentence_7, sentence_parse, get_root_sub_obj
 import re
 sentence_parses = []
 sentences = []
@@ -23,7 +23,7 @@ def identify_parse_tag_story(story):
     for sentence in split_sentences(story):
         sentences.append(sentence)
         sentence_parses.append(sentence_parse(sentence))
-        tagged_sentences.append(tag_sentence(sentence))
+        tagged_sentences.append(tag_sentence_7(sentence))
 
 
 def classify(question):
@@ -58,14 +58,15 @@ def sentence_score(main_words, sent):  # Check for key words in the sentence for
                 score += 2
     return score
 
-def who_answer(question, story): # easy jordan
+
+def who_answer(question, story):
     sentences = split_sentences(story)
     scores = []
     for sentence in sentences:
         scores.append((sentence, word_matches(question, sentence)))
     scores.sort(key=lambda x: x[1], reverse=True)
     for s in scores:  # search highest scored sentences for a person
-        tagged = tag_sentence(s[0])
+        tagged = tag_sentence_3(s[0])
         for pair in tagged:
             if pair[1] == 'PERSON' and pair[0] not in question:
                 return pair[0]
@@ -79,7 +80,7 @@ def normalize(sent):  # Convert to lowercase and remove non letter and number ch
 def what_answer(question, story):  # hard
     return ''
 
-def where_answer(question, story): # easy jordan
+def where_answer(question, story):
     location_preps = ['above', 'across', 'after', 'along', 'around', 'at', 'behind', 'below',
                       'beside', 'between', 'by', 'close to', 'from', 'in front of', 'inside', 'in', 'into',
                       'near', 'next to', 'onto', 'opposite', 'out of', 'outside', 'over', 'past',
@@ -95,14 +96,14 @@ def where_answer(question, story): # easy jordan
         scores.append((sentence, word_matches(question, sentence) + bonus))
     scores.sort(key=lambda x: x[1], reverse=True)
     for s in scores:  # search highest scored sentences for a location
-        tagged = tag_sentence(s[0].split())
+        tagged = tag_sentence_3(s[0])
         for pair in tagged:
             if pair[1] == 'LOCATION':
                 return pair[0]
     return scores[0]
 
 
-def when_answer(question, story):  # easy mitch
+def when_answer(question, story):
     main_words = get_root_sub_obj(question.question)
     identify_parse_tag_story(story)
     sentence_scores = []
