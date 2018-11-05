@@ -1,7 +1,6 @@
 import sys
 import re
 import question_classifier as qc
-from parse import split_sentences, get_sentence_parse, tag_sentence
 
 
 class Story:
@@ -55,7 +54,18 @@ def answer_questions(story, questions):
     answers = []
     for q in questions:
         q_class = qc.classify(q.question)
-        answers.append(Answer(q.id, q_class.answer(story)))
+
+        if q_class is not None:
+
+            if q_class.type == "when":
+                answers.append(Answer(q.id, qc.when_answer(q, story)))
+            elif q_class.type == "why":
+                answers.append(Answer(q.id, qc.why_answer(q, story)))
+
+        # else:
+        # answers.append(Answer(q.id, q_class.answer(story)))
+        # if len(q.question.split()) >= 10: #It seems about 60% of the time long questions result in answers that contain the correct answer.
+        #     answers.append(Answer(q.id, q_class.answer(story)))
     return answers
 
 
