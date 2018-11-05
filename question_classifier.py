@@ -4,7 +4,9 @@ from nltk.corpus import wordnet
 
 sentence_parses = []
 sentences = []
-tagged_sentences = []
+tagged_sentences7 = []
+tagged_sentences3 = []
+
 
 class QuestionClass:
     def __init__(self, type_, question):
@@ -17,14 +19,16 @@ class QuestionClass:
         return ans_func[self.type](self.question, story)
 
 
-def identify_parse_tag_story(story):
+def identify_parse_tag_story(story, sentence_parses, sentences, tagged_sentences3, tagged_sentences7):
     sentence_parses.clear()
     sentences.clear()
-    tagged_sentences.clear()
+    tagged_sentences7.clear()
+    tagged_sentences3.clear()
     for sentence in split_sentences(story):
         sentences.append(sentence)
         sentence_parses.append(sentence_parse(sentence))
-        tagged_sentences.append(tag_sentence_7(sentence))
+        tagged_sentences7.append(tag_sentence_7(sentence))
+        tagged_sentences3.append(tag_sentence_3(sentence))
 
 
 def classify(question):
@@ -106,7 +110,7 @@ def where_answer(question, story):
 
 def when_answer(question, story):
     main_words = get_root_sub_obj(question)
-    identify_parse_tag_story(story)
+    # identify_parse_tag_story(story)
     sentence_scores = []
     possible_sentence_answer = []
     possible_answers = []
@@ -118,7 +122,7 @@ def when_answer(question, story):
         sentence_scores.append(wm + sc)
 
     i = 0
-    for sentence in tagged_sentences:
+    for sentence in tagged_sentences7:
         for pair in sentence:
             if pair[1] == 'TIME' or pair[1] == 'DATE':
                 possible_sentence_answer.append(i)
