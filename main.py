@@ -1,6 +1,7 @@
 import sys
 import re
 import question_classifier as qc
+from question_classifier import identify_parse_tag_story
 
 
 class Story:
@@ -53,6 +54,8 @@ def parse_questions(filename):
 
 def answer_questions(story, questions):
     answers = []
+
+    identify_parse_tag_story(story)
     for q in questions:
         q_class = qc.classify(q.question)
 
