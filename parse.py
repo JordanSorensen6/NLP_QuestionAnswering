@@ -4,7 +4,7 @@ from nltk import word_tokenize
 import nltk.data
 from nltk.tag.stanford import StanfordNERTagger
 
-java_path = "C:\\Program Files\\Java\\jdk1.8.0_131\\bin\\java.exe"
+java_path = "C:\\Program Files\\Java\\jdk1.8.0_151\\bin\\java.exe"
 os.environ['JAVAHOME'] = java_path
 os.environ['STANFORD_PARSER'] = 'jars\\stanford-parser.jar'
 os.environ['STANFORD_MODELS'] = 'jars\\stanford-parser-3.9.2-models.jar'
@@ -12,7 +12,8 @@ os.environ['STANFORD_MODELS'] = 'jars\\stanford-parser-3.9.2-models.jar'
 parser = stanford.StanfordParser(model_path="englishPCFG.ser.gz")
 dep_parser = stanford.StanfordDependencyParser('jars\\stanford-parser.jar', 'jars\\stanford-parser-3.9.2-models.jar')
 tokenizer = nltk.data.load('tokenizers\\punkt\\english.pickle')
-ner = StanfordNERTagger('english.muc.7class.distsim.crf.ser.gz', 'jars\\stanford-ner.jar')
+ner3 = StanfordNERTagger('english.all.3class.distsim.crf.ser.gz', 'jars\\stanford-ner.jar')
+ner7 = StanfordNERTagger('english.muc.7class.distsim.crf.ser.gz', 'jars\\stanford-ner.jar')
 
 def sentence_parse(sentence):
     return parser.raw_parse(sentence)
@@ -36,5 +37,8 @@ def split_sentences(text):
     text = text.replace('\n', ' ')
     return tokenizer.tokenize(text)
 
-def tag_sentence(sentence):
-    return ner.tag(word_tokenize(sentence))
+def tag_sentence_3(sentence):
+    return ner3.tag(word_tokenize(sentence))
+
+def tag_sentence_7(sentence):
+    return ner7.tag(word_tokenize(sentence))
