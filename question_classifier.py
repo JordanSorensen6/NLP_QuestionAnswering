@@ -1,24 +1,19 @@
 from parse import split_sentences, tag_sentence, sentence_parse, get_root_sub_obj
 import re
-
 sentence_parses = []
 sentences = []
 tagged_sentences = []
+from nltk.corpus import wordnet
 
 class QuestionClass:
-    def __init__(self, type, question):
-        self.type = type
+    def __init__(self, type_, question):
+        self.type = type_
         self.question = question
 
     def answer(self, story):
-        # ans_func = {'who': who_answer, 'what': what_answer, 'when': when_answer,
-        #             'where': where_answer, 'why': why_answer, 'how': how_answer}
-        # ans_func[self.type](self, story)
-        sentence_match = []
-        rso = get_root_sub_obj(self.question);
-        for sentence in split_sentences(story):
-            sentence_match.append((sentence, word_matches(self.question, sentence) + sentence_score(rso, sentence)))
-        return max(sentence_match, key=lambda x: x[1])[0]
+        ans_func = {'who': who_answer, 'what': what_answer, 'when': when_answer,
+                    'where': where_answer, 'why': why_answer, 'how': how_answer}
+        return ans_func[self.type](self.question, story)
 
 
 def identify_parse_tag_story(story):
@@ -33,12 +28,12 @@ def identify_parse_tag_story(story):
 
 def classify(question):
     types = ['who', 'what', 'when', 'where', 'why', 'how']
-    first = question.split()[0].lower()
-    if first in types:
-        return QuestionClass(first, question)
+    q_split = [x.lower() for x in question.split()]
+    if q_split[0] in types:  # the first word in the question typically gives us the type of question
+        return QuestionClass(q_split[0], question)
     else:
-        for type in types:
-            if type in [x.lower() for x in question.split()]:
+        for t in types:
+            if t in q_split:
                 return QuestionClass(type, question)
 
 
@@ -50,7 +45,7 @@ def word_matches(sent1, sent2):  # Check sentence similarity.
         if w in sent2:
             count += 1
     return count
-
+  
 
 def sentence_score(main_words, sent):  # Check for key words in the sentence for additional points.
     sent = normalize(sent)
@@ -63,17 +58,48 @@ def sentence_score(main_words, sent):  # Check for key words in the sentence for
                 score += 2
     return score
 
+def who_answer(question, story): # easy jordan
+    sentences = split_sentences(story)
+    scores = []
+    for sentence in sentences:
+        scores.append((sentence, word_matches(question, sentence)))
+    scores.sort(key=lambda x: x[1], reverse=True)
+    for s in scores:  # search highest scored sentences for a person
+        tagged = tag_sentence(s[0])
+        for pair in tagged:
+            if pair[1] == 'PERSON' and pair[0] not in question:
+                return pair[0]
+    return scores[0]
+
 
 def normalize(sent):  # Convert to lowercase and remove non letter and number chars.
     return re.sub('[^a-zA-Z0-9\s]+', '', sent).lower()
 
 
-def who_answer(question, story):  # easy jordan
-    return ''
-
-
 def what_answer(question, story):  # hard
     return ''
+
+def where_answer(question, story): # easy jordan
+    location_preps = ['above', 'across', 'after', 'along', 'around', 'at', 'behind', 'below',
+                      'beside', 'between', 'by', 'close to', 'from', 'in front of', 'inside', 'in', 'into',
+                      'near', 'next to', 'onto', 'opposite', 'out of', 'outside', 'over', 'past',
+                      'to', 'towards', 'under', 'up']
+    sentences = split_sentences(story)
+    scores = []
+    for sentence in sentences:
+        bonus = 0
+        for word in sentence:  # add bonus points if the sentence contains a location preposition
+            if word.lower() in location_preps:
+                bonus = 3
+                break
+        scores.append((sentence, word_matches(question, sentence) + bonus))
+    scores.sort(key=lambda x: x[1], reverse=True)
+    for s in scores:  # search highest scored sentences for a location
+        tagged = tag_sentence(s[0].split())
+        for pair in tagged:
+            if pair[1] == 'LOCATION':
+                return pair[0]
+    return scores[0]
 
 
 def when_answer(question, story):  # easy mitch
@@ -113,10 +139,6 @@ def when_answer(question, story):  # easy mitch
         return possible_answers[answer_index]
     else:
         return ''
-
-
-def where_answer(question, story):  # easy jordan
-    return ''
 
 
 def why_answer(question, story):  # easy mitch
