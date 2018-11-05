@@ -1,7 +1,6 @@
 import sys
 import re
 import question_classifier as qc
-from parse import split_sentences, get_sentence_parse, tag_sentence
 
 
 class Story:
