@@ -19,7 +19,7 @@ class QuestionClass:
         return ans_func[self.type](self.question, story)
 
 
-def identify_parse_tag_story(story, sentence_parses, sentences, tagged_sentences3, tagged_sentences7):
+def identify_parse_tag_story(story):
     sentence_parses.clear()
     sentences.clear()
     tagged_sentences7.clear()
@@ -83,7 +83,31 @@ def normalize(sent):  # Convert to lowercase and remove non letter and number ch
 
 
 def what_answer(question, story):  # hard
-    return ''
+    return find_close_sentence(question)
+
+
+def find_close_sentence(question):
+    main_words = get_root_sub_obj(question)
+    sentence_scores = []
+    for sent in sentences:
+        wm = word_matches(question, sent)
+        sc = sentence_score(main_words, sent)
+        sentence_scores.append(wm + sc)
+
+    maximum = -1
+    max_index = 0
+    index = 0
+    for score in sentence_scores:
+        if score > maximum:
+            maximum = score
+            max_index = index
+        index += 1
+
+    if maximum > 5:
+        return sentences[max_index]
+    else:
+        return ''
+
 
 def where_answer(question, story):
     location_preps = ['above', 'across', 'after', 'along', 'around', 'at', 'behind', 'below',
@@ -152,8 +176,8 @@ def why_answer(question, story):  # easy mitch
     main_words = get_root_sub_obj(question)
     main_words = main_words + common_answer_words
     sentence_scores = []
-    sents = split_sentences(story)
-    for sent in sents:
+    # sents = split_sentences(story)
+    for sent in sentences:
         wm = word_matches(question, sent)
         sc = sentence_score(main_words, sent)
         sentence_scores.append(wm + sc)
@@ -168,10 +192,10 @@ def why_answer(question, story):  # easy mitch
         index += 1
 
     if maximum > 5:
-        return sents[max_index]
+        return sentences[max_index]
     else:
         return ''
 
 
 def how_answer(question, story):  # hard
-    return ''
+    return find_close_sentence(question)
