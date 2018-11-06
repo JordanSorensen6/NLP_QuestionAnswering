@@ -43,7 +43,7 @@ def classify(question):
 
 
 def word_matches(sent1, sent2):  # Check sentence similarity.
-    count = 0
+    count = 0 #todo filter out closed class words?
     sent1 = normalize(sent1)
     sent2 = normalize(sent2)
     for w in sent1.split():
@@ -65,17 +65,20 @@ def sentence_score(main_words, sent):  # Check for key words in the sentence for
 
 
 def who_answer(question, story):
-    sentences = split_sentences(story)
     scores = []
     main_words = get_root_sub_obj(question)
-    for sentence in sentences:
-        scores.append((sentence, word_matches(question, sentence) + sentence_score(main_words, sentence)))
-    scores.sort(key=lambda x: x[1], reverse=True)
-    for s in scores:  # search highest scored sentences for a person
-        tagged = tag_sentence_3(s[0])
+    for x in range(len(sentences)):
+        scores.append((sentences[x], tagged_sentences3[x],
+                       word_matches(question, sentences[x]) + sentence_score(main_words, sentences[x])))
+    scores.sort(key=lambda x: x[2], reverse=True)
+    for s in scores[:3]:  # search highest scored sentences for a person
+        tagged = s[1]
+        answer = ''
         for pair in tagged:
             if pair[1] == 'PERSON' and pair[0] not in question:
-                return s[0]
+                answer += pair[0] + ' '
+        if answer != '':
+            return answer
     return scores[0][0]
 
 
@@ -117,22 +120,24 @@ def where_answer(question, story):
                       'near', 'next to', 'onto', 'opposite', 'out of', 'outside', 'over', 'past',
                       'to', 'towards', 'under', 'up']
     main_words = get_root_sub_obj(question)
-    sentences = split_sentences(story)
     scores = []
-    for sentence in sentences:
+    for x in range(len(sentences)):
         bonus = 0
-        for word in sentence:  # add bonus points if the sentence contains a location preposition
+        for word in sentences[x]:  # add bonus points if the sentence contains a location preposition
             if word.lower() in location_preps:
                 bonus = 3
                 break
-        scores.append((sentence, word_matches(question, sentence) + bonus + sentence_score(main_words, sentence)))
-    scores.sort(key=lambda x: x[1], reverse=True)
-    for s in scores:  # search highest scored sentences for a location
-        tagged = tag_sentence_3(s[0])
+        scores.append((sentences[x], tagged_sentences3[x],
+                       word_matches(question, sentences[x]) + bonus + sentence_score(main_words, sentences[x])))
+    scores.sort(key=lambda x: x[2], reverse=True)
+    for s in scores[:3]:  # search highest scored sentences for a location
+        tagged = s[1]
         answer = ''
         for pair in tagged:
             if pair[1] == 'LOCATION':
-                answer += s[0] + ' '
+                answer += pair[0] + ' '
+        if answer != '':
+            return answer
     return scores[0][0]
 
 
@@ -175,7 +180,7 @@ def when_answer(question, story):
         return ''
 
 
-def why_answer(question, story):  # easy mitch
+def why_answer(question, story):
     common_answer_words = [("why", "because"), ("why", "so")]
     main_words = get_root_sub_obj(question)
     main_words = main_words + common_answer_words
