@@ -2,7 +2,7 @@ from parse import split_sentences, tag_sentence_3, tag_sentence_7, sentence_pars
 import re
 from nltk.corpus import wordnet
 
-sentence_parses = []
+# sentence_parses = []
 sentences = []
 tagged_sentences7 = []
 tagged_sentences3 = []
@@ -20,13 +20,13 @@ class QuestionClass:
 
 
 def identify_parse_tag_story(story):
-    sentence_parses.clear()
+    # sentence_parses.clear()
     sentences.clear()
     tagged_sentences7.clear()
     tagged_sentences3.clear()
     for sentence in split_sentences(story):
         sentences.append(sentence)
-        sentence_parses.append(sentence_parse(sentence))
+        # sentence_parses.append(sentence_parse(sentence))
         tagged_sentences7.append(tag_sentence_7(sentence))
         tagged_sentences3.append(tag_sentence_3(sentence))
 
@@ -113,7 +113,6 @@ def find_close_sentence(question):
         return ''
 
 
-
 def where_answer(question, story):
     location_preps = ['above', 'across', 'after', 'along', 'around', 'at', 'behind', 'below',
                       'beside', 'between', 'by', 'close to', 'from', 'in front of', 'inside', 'in', 'into',
@@ -139,6 +138,54 @@ def where_answer(question, story):
         if answer != '':
             return answer
     return scores[0][0]
+
+
+def check_number(word):
+    word = normalize(word)
+    return re.match("[1-9]+", word)
+
+
+def how_much_how_many(question, type):
+    main_words = get_root_sub_obj(question)
+    sentence_scores = []
+    possible_sentence_answer = []
+    possible_answers = []
+    answer = ""
+
+    for sentence in sentences:
+        wm = word_matches(question, sentence)
+        sc = sentence_score(main_words, sentence)
+        sentence_scores.append(wm + sc)
+
+    i = 0
+    for sentence in tagged_sentences7:
+        for pair in sentence:
+            if type == 'much':
+                if pair[1] == 'MONEY':
+                    possible_sentence_answer.append(i)
+                    answer += pair[0] + " "
+            elif type == 'many':
+                if check_number(pair[0]):
+                    possible_sentence_answer.append(i)
+                    answer += pair[0] + " "
+        possible_answers.append(answer)
+        answer = ""
+        i += 1
+
+    maximum = -1
+    answer_index = -1
+    i = 0
+    for answer in possible_answers:
+        if answer != "":
+            if maximum < sentence_scores[i]:
+                maximum = sentence_scores[i]
+                answer_index = i
+        i += 1
+
+    if answer_index != -1:
+        return possible_answers[answer_index]
+    else:
+        return ''
 
 
 def when_answer(question, story):
@@ -207,4 +254,8 @@ def why_answer(question, story):
 
 
 def how_answer(question, story):  # hard
+    if 'how much' in normalize(question):
+        return how_much_how_many(question, 'much')
+    elif 'how many' in normalize(question):
+        return how_much_how_many(question, 'many')
     return find_close_sentence(question)
