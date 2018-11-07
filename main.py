@@ -75,7 +75,7 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         print('Invalid command line arguments.')
         sys.exit()
-
+    file = open("response.txt", "w")
     with open(sys.argv[1]) as f:
         lines = f.read().splitlines()
         directory = lines[0]
@@ -88,3 +88,7 @@ if __name__ == '__main__':
                 continue
             answers = answer_questions(story.text, questions)
             print_answers(answers)
+            for a in answers:
+                file.write('QuestionID: {}\n'.format(a.q_id))
+                file.write('Answer: {}\r\n'.format(a.answer))
+    file.close()

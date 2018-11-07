@@ -144,3 +144,9 @@ parse.py
 # pydev ignores
 .project
 .pydevproject
+
+# ignore response
+response.txt
+
+# ignore jdk
+java.exe

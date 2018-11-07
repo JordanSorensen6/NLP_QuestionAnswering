@@ -4,8 +4,9 @@ from nltk import word_tokenize
 import nltk.data
 from nltk.tag.stanford import StanfordNERTagger
 
-java_path = "C:\\Program Files\\Java\\jdk1.8.0_131\\bin\\java.exe"
+#java_path = "C:\\Program Files\\Java\\jdk1.8.0_131\\bin\\java.exe"
 #java_path = "C:\\Program Files\\Java\\jdk1.8.0_151\\bin\\java.exe"
+java_path = "java.exe"
 os.environ['JAVAHOME'] = java_path
 os.environ['STANFORD_PARSER'] = 'jars\\stanford-parser.jar'
 os.environ['STANFORD_MODELS'] = 'jars\\stanford-parser-3.9.2-models.jar'
