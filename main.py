@@ -20,9 +20,8 @@ class Question:
 
 
 class Answer:
-    def __init__(self, q_id, question, answer=''):
+    def __init__(self, q_id, answer=''):
         self.q_id = q_id
-        self.question = question #TODO remove
         self.answer = answer
 
 
@@ -60,7 +59,7 @@ def answer_questions(story, questions):
         q_class = qc.classify(q.question)
 
         if q_class is not None:
-            answers.append(Answer(q.id, q.question, q_class.answer(story))) #TODO remove question from answer
+            answers.append(Answer(q.id, q_class.answer(story)))
 
     return answers
 
@@ -68,7 +67,6 @@ def answer_questions(story, questions):
 def print_answers(answers):
     for a in answers:
         print('QuestionID: {}'.format(a.q_id))
-        print('Question: {}'.format(a.question)) #TODO remove
         print('Answer: {}'.format(a.answer))
         print()
 
