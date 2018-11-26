@@ -60,6 +60,8 @@ def answer_questions(story, questions):
 
         if q_class is not None:
             answers.append(Answer(q.id, q_class.answer(story)))
+        else:  #QuestionID: 1999-W32-3-5 -- this throws off alignment.
+            answers.append(Answer(q.id, ""))
 
     return answers
 
@@ -90,5 +92,5 @@ if __name__ == '__main__':
             print_answers(answers)
             for a in answers:
                 file.write('QuestionID: {}\n'.format(a.q_id))
-                file.write('Answer: {}\r\n'.format(a.answer))
+                file.write('Answer: {}\n\n'.format(a.answer))
     file.close()
