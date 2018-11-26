@@ -13,7 +13,7 @@ os.environ['STANFORD_MODELS'] = 'jars\\stanford-parser-3.9.2-models.jar'
 
 parser = stanford.StanfordParser(model_path="englishPCFG.ser.gz")
 dep_parser = stanford.StanfordDependencyParser('jars\\stanford-parser.jar', 'jars\\stanford-parser-3.9.2-models.jar')
-tokenizer = nltk.data.load('tokenizers\\punkt\\english.pickle')
+tokenizer = nltk.data.load('english.pickle')
 ner3 = StanfordNERTagger('english.all.3class.distsim.crf.ser.gz', 'jars\\stanford-ner.jar')
 ner7 = StanfordNERTagger('english.muc.7class.distsim.crf.ser.gz', 'jars\\stanford-ner.jar')
 
