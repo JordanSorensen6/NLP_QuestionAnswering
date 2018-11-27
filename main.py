@@ -27,7 +27,7 @@ class Answer:
 
 def parse_story(filename):
     with open(filename) as story_file:
-        s_info_re = re.compile(r"HEADLINE: (.+)\nDATE: (.+)\nSTORYID: (.+)", re.MULTILINE)
+        s_info_re = re.compile(r"HEADLINE: (.*)\nDATE: (.*)\nSTORYID: (.*)", re.MULTILINE)#Process stories with no headline, date, or storyID. This cost us points.
         s_text_re = re.compile(r"TEXT:\n\n(.+)", re.DOTALL)
         story_txt = story_file.read()
         m1 = s_info_re.match(story_txt)
