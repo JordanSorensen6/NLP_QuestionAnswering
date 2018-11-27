@@ -205,6 +205,9 @@ def how_much_how_many(question, type):
                 if pair[1] == 'MONEY':
                     possible_sentence_answer.append(i)
                     answer += pair[0] + " "
+                elif pair[1] == 'TIME':
+                    possible_sentence_answer.append(i)
+                    answer += pair[0] + " "
             elif type == 'many':
                 if check_number(pair[0]):
                     possible_sentence_answer.append(i)
