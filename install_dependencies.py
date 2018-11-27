@@ -2,7 +2,9 @@ from io import BytesIO
 from zipfile import ZipFile
 from urllib.request import urlopen
 import os
+import nltk
 
+nltk.download('averaged_perceptron_tagger')
 
 # create directories
 if not os.path.isdir('jars'):
